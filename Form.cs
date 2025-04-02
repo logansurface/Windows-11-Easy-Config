@@ -41,7 +41,7 @@ namespace EasyConfig
             ProcessStartInfo psi = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                Arguments = $"-NoExit -ExecutionPolicy Bypass \"{scriptPath}\"",
                 UseShellExecute = true,
                 RedirectStandardOutput = false,
                 RedirectStandardError = false,
