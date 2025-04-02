@@ -20,7 +20,9 @@ namespace EasyConfig
             runScriptButton = new Button
             {
                 Text = "Run Script",
-                Dock = DockStyle.Top
+                Size = new System.Drawing.Size(150, 40),
+                Location = new System.Drawing.Point(325, 150),
+                Anchor = AnchorStyles.None
             };
             runScriptButton.Click += RunScriptButton_Click;
 
