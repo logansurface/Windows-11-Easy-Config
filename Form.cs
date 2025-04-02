@@ -1,8 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.IO;
 
-namespace MyProject
+namespace EasyConfig
 {
     public class MainForm : Form
     {
@@ -10,21 +11,27 @@ namespace MyProject
 
         public MainForm()
         {
+            // Set fixed window size and disable resizing
+            this.Size = new System.Drawing.Size(800, 350);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+
             runScriptButton = new Button
             {
-                Text = "Run PowerShell Script",
+                Text = "Run Script",
                 Dock = DockStyle.Top
             };
             runScriptButton.Click += RunScriptButton_Click;
 
             Controls.Add(runScriptButton);
-            Text = "PowerShell Runner";
+            Text = "Windows 11 Easy Config";
         }
 
         private void RunScriptButton_Click(object sender, EventArgs e)
         {
-            // Adjust the script path as needed
-            string scriptPath = @"C:\Scripts\MyScript.ps1";
+            // Get the script path relative to the application directory
+            string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MyScript.ps1");
 
             ProcessStartInfo psi = new ProcessStartInfo
             {
