@@ -21,11 +21,19 @@ namespace EasyConfig
         private const int VERTICAL_SPACING = 20;
         private const int HORIZONTAL_PADDING = 20;
         private const int VERTICAL_PADDING = 20;
+        private const int FORM_WIDTH = 800;
+        private const int BUTTON_HEIGHT = 80;
 
         public MainForm()
         {
+            // Calculate total height needed for all controls
+            int totalHeight = VERTICAL_PADDING + // Top padding
+                            (CONTROL_HEIGHT + VERTICAL_SPACING) * 4 + // 4 rows of controls with spacing
+                            BUTTON_HEIGHT + // Run button height
+                            VERTICAL_PADDING; // Bottom padding
+
             // Set fixed window size and disable resizing
-            this.Size = new System.Drawing.Size(800, 450);
+            this.Size = new System.Drawing.Size(FORM_WIDTH, totalHeight);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -120,7 +128,7 @@ namespace EasyConfig
             runScriptButton = new Button
             {
                 Text = "Run Script",
-                Size = new System.Drawing.Size(150, 40),
+                Size = new System.Drawing.Size(150, BUTTON_HEIGHT),
                 Location = new System.Drawing.Point((mainPanel.ClientSize.Width - 150) / 2, currentY),
                 Anchor = AnchorStyles.None
             };
