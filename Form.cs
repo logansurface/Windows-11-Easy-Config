@@ -49,7 +49,7 @@ namespace EasyConfig
             };
 
             // Calculate positions using constants
-            int currentY = VERTICAL_PADDING;
+            int currentY = 0;
 
             // Create labels and input fields
             pathLabel = new Label
