@@ -17,15 +17,18 @@ namespace EasyConfig
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            // Create and configure the run script button
             runScriptButton = new Button
             {
                 Text = "Run Script",
-                Size = new System.Drawing.Size(150, 40),
-                Location = new System.Drawing.Point(325, 150),
+                Size = new System.Drawing.Size(150, 80),
+                Location = new System.Drawing.Point(300, 100),
                 Anchor = AnchorStyles.None
             };
+            // Add click event handler to the run script button
             runScriptButton.Click += RunScriptButton_Click;
 
+            // Add the button and text to the form
             Controls.Add(runScriptButton);
             Text = "Windows 11 Easy Config";
         }
@@ -39,9 +42,9 @@ namespace EasyConfig
             {
                 FileName = "powershell.exe",
                 Arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{scriptPath}\"",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                UseShellExecute = true,
+                RedirectStandardOutput = false,
+                RedirectStandardError = false,
                 CreateNoWindow = false
             };
 
