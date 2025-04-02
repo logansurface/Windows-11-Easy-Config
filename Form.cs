@@ -45,7 +45,7 @@ namespace EasyConfig
             {
                 Dock = DockStyle.Fill,
                 AutoScroll = false, // Disable auto-scroll since we're controlling the size
-                Padding = new Padding(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING)
+                //Padding = new Padding(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING)
             };
 
             // Calculate positions using constants
