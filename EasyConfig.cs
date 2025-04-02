@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace MyProject
+namespace EasyConfig
 {
     static class Program
     {
