@@ -35,7 +35,7 @@ namespace EasyConfig
                             VERTICAL_PADDING; // Bottom padding
 
             // Set fixed window size and disable resizing
-            this.Size = new System.Drawing.Size(FORM_WIDTH, totalHeight);
+            this.Size = new System.Drawing.Size(1200, 800);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
