@@ -37,6 +37,9 @@ try {
         Write-Host "Creating registry path: $RegistryPath"
         New-Item -Path $RegistryPath -Force | Out-Null
     }
+    else {
+        Write-Host "Registry path already exists: $RegistryPath"
+    }
 
     # Convert the value to the appropriate type
     $convertedValue = Convert-ValueToType -Value $KeyValue -Type $KeyType

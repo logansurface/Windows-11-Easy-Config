@@ -63,7 +63,7 @@ namespace EasyConfig
                 Location = new System.Drawing.Point(110, currentY),
                 Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                Multiline = true
+                Multiline = false
             };
 
             currentY += CONTROL_HEIGHT + VERTICAL_SPACING;
@@ -81,7 +81,7 @@ namespace EasyConfig
                 Location = new System.Drawing.Point(110, currentY),
                 Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                Multiline = true
+                Multiline = false
             };
 
             currentY += CONTROL_HEIGHT + VERTICAL_SPACING;
@@ -99,7 +99,7 @@ namespace EasyConfig
                 Location = new System.Drawing.Point(110, currentY),
                 Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                Multiline = true
+                Multiline = false
             };
 
             currentY += CONTROL_HEIGHT + VERTICAL_SPACING;
@@ -140,7 +140,6 @@ namespace EasyConfig
                 registryPathBox, keyNameBox, keyValueBox, keyTypeCombo,
                 runScriptButton
             });
-
             // Add the panel to the form
             Controls.Add(mainPanel);
 
