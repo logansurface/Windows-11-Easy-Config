@@ -31,14 +31,44 @@ function Convert-ValueToType {
     }
 }
 
+# Function to convert registry path to PowerShell format
+function Convert-RegistryPath {
+    param([string]$Path)
+    
+    # Remove any leading/trailing whitespace
+    $Path = $Path.Trim()
+    
+    # Convert common registry path formats
+    $Path = $Path.Replace("HKEY_LOCAL_MACHINE", "HKLM:")
+    $Path = $Path.Replace("HKEY_CURRENT_USER", "HKCU:")
+    $Path = $Path.Replace("HKEY_USERS", "HKU:")
+    $Path = $Path.Replace("HKEY_CLASSES_ROOT", "HKCR:")
+    $Path = $Path.Replace("HKEY_CURRENT_CONFIG", "HKCC:")
+    
+    # If no prefix was found, assume HKLM
+    if (-not ($Path.StartsWith("HKLM:") -or $Path.StartsWith("HKCU:") -or 
+              $Path.StartsWith("HKU:") -or $Path.StartsWith("HKCR:") -or 
+              $Path.StartsWith("HKCC:"))) {
+        $Path = "HKLM:" + $Path
+    }
+    
+    # Ensure proper path format
+    $Path = $Path.Replace("\", "\")
+    
+    return $Path
+}
+
 try {
+    # Convert registry path to PowerShell format
+    $psRegistryPath = Convert-RegistryPath -Path $RegistryPath
+    
     # Check if the registry path exists
-    if (!(Test-Path $RegistryPath)) {
-        Write-Host "Creating registry path: $RegistryPath"
-        New-Item -Path $RegistryPath -Force | Out-Null
+    if (!(Test-Path $psRegistryPath)) {
+        Write-Host "Creating registry path: $psRegistryPath"
+        New-Item -Path $psRegistryPath -Force | Out-Null
     }
     else {
-        Write-Host "Registry path already exists: $RegistryPath"
+        Write-Host "Registry path already exists: $psRegistryPath"
     }
 
     # Convert the value to the appropriate type
@@ -46,12 +76,12 @@ try {
 
     # Set the registry value
     Write-Host "Setting registry value:"
-    Write-Host "Path: $RegistryPath"
+    Write-Host "Path: $psRegistryPath"
     Write-Host "Name: $KeyName"
     Write-Host "Type: $KeyType"
     Write-Host "Value: $KeyValue"
     
-    Set-ItemProperty -Path $RegistryPath -Name $KeyName -Value $convertedValue -Type $KeyType
+    Set-ItemProperty -Path $psRegistryPath -Name $KeyName -Value $convertedValue -Type $KeyType
 
     Write-Host "`nRegistry modification completed successfully!"
 } catch {

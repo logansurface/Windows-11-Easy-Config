@@ -23,6 +23,8 @@ namespace EasyConfig
         private const int VERTICAL_PADDING = 20;
         private const int FORM_WIDTH = 800;
         private const int BUTTON_HEIGHT = 80;
+        private const int LABEL_WIDTH = 100;
+        private const int CONTROL_SPACING = 10;
 
         public MainForm()
         {
@@ -42,7 +44,7 @@ namespace EasyConfig
             mainPanel = new Panel
             {
                 Dock = DockStyle.Fill,
-                AutoScroll = true,
+                AutoScroll = false, // Disable auto-scroll since we're controlling the size
                 Padding = new Padding(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING)
             };
 
@@ -54,14 +56,14 @@ namespace EasyConfig
             {
                 Text = "Registry Path:",
                 Location = new System.Drawing.Point(0, currentY),
-                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Size = new System.Drawing.Size(LABEL_WIDTH, CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left
             };
 
             registryPathBox = new TextBox
             {
-                Location = new System.Drawing.Point(110, currentY),
-                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
+                Location = new System.Drawing.Point(LABEL_WIDTH + CONTROL_SPACING, currentY),
+                Size = new System.Drawing.Size(FORM_WIDTH - (LABEL_WIDTH + CONTROL_SPACING + HORIZONTAL_PADDING * 2), CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Multiline = false
             };
@@ -72,14 +74,14 @@ namespace EasyConfig
             {
                 Text = "Key Name:",
                 Location = new System.Drawing.Point(0, currentY),
-                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Size = new System.Drawing.Size(LABEL_WIDTH, CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left
             };
 
             keyNameBox = new TextBox
             {
-                Location = new System.Drawing.Point(110, currentY),
-                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
+                Location = new System.Drawing.Point(LABEL_WIDTH + CONTROL_SPACING, currentY),
+                Size = new System.Drawing.Size(FORM_WIDTH - (LABEL_WIDTH + CONTROL_SPACING + HORIZONTAL_PADDING * 2), CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Multiline = false
             };
@@ -90,14 +92,14 @@ namespace EasyConfig
             {
                 Text = "Key Value:",
                 Location = new System.Drawing.Point(0, currentY),
-                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Size = new System.Drawing.Size(LABEL_WIDTH, CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left
             };
 
             keyValueBox = new TextBox
             {
-                Location = new System.Drawing.Point(110, currentY),
-                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
+                Location = new System.Drawing.Point(LABEL_WIDTH + CONTROL_SPACING, currentY),
+                Size = new System.Drawing.Size(FORM_WIDTH - (LABEL_WIDTH + CONTROL_SPACING + HORIZONTAL_PADDING * 2), CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Multiline = false
             };
@@ -108,14 +110,14 @@ namespace EasyConfig
             {
                 Text = "Key Type:",
                 Location = new System.Drawing.Point(0, currentY),
-                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Size = new System.Drawing.Size(LABEL_WIDTH, CONTROL_HEIGHT),
                 Anchor = AnchorStyles.Left
             };
 
             keyTypeCombo = new ComboBox
             {
-                Location = new System.Drawing.Point(110, currentY),
-                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
+                Location = new System.Drawing.Point(LABEL_WIDTH + CONTROL_SPACING, currentY),
+                Size = new System.Drawing.Size(FORM_WIDTH - (LABEL_WIDTH + CONTROL_SPACING + HORIZONTAL_PADDING * 2), CONTROL_HEIGHT),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right
             };
@@ -129,7 +131,7 @@ namespace EasyConfig
             {
                 Text = "Run Script",
                 Size = new System.Drawing.Size(150, BUTTON_HEIGHT),
-                Location = new System.Drawing.Point((mainPanel.ClientSize.Width - 150) / 2, currentY),
+                Location = new System.Drawing.Point((FORM_WIDTH - 150) / 2, currentY),
                 Anchor = AnchorStyles.None
             };
             runScriptButton.Click += RunScriptButton_Click;
@@ -140,6 +142,7 @@ namespace EasyConfig
                 registryPathBox, keyNameBox, keyValueBox, keyTypeCombo,
                 runScriptButton
             });
+
             // Add the panel to the form
             Controls.Add(mainPanel);
 
@@ -151,11 +154,16 @@ namespace EasyConfig
             // Get the script path relative to the application directory
             string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MyScript.ps1");
 
+            // Escape special characters in the parameters
+            string escapedPath = registryPathBox.Text.Replace("\"", "`\"");
+            string escapedName = keyNameBox.Text.Replace("\"", "`\"");
+            string escapedValue = keyValueBox.Text.Replace("\"", "`\"");
+
             // Build the PowerShell arguments with parameters
             string arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{scriptPath}\" " +
-                             $"-RegistryPath \"{registryPathBox.Text}\" " +
-                             $"-KeyName \"{keyNameBox.Text}\" " +
-                             $"-KeyValue \"{keyValueBox.Text}\" " +
+                             $"-RegistryPath \"{escapedPath}\" " +
+                             $"-KeyName \"{escapedName}\" " +
+                             $"-KeyValue \"{escapedValue}\" " +
                              $"-KeyType \"{keyTypeCombo.SelectedItem}\"";
 
             ProcessStartInfo psi = new ProcessStartInfo
