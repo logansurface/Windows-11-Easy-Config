@@ -16,99 +16,125 @@ namespace EasyConfig
         private Label nameLabel;
         private Label valueLabel;
         private Label typeLabel;
+        private Panel mainPanel;
+        private const int CONTROL_HEIGHT = 80;
+        private const int VERTICAL_SPACING = 20;
+        private const int HORIZONTAL_PADDING = 20;
+        private const int VERTICAL_PADDING = 20;
 
         public MainForm()
         {
             // Set fixed window size and disable resizing
-            this.Size = new System.Drawing.Size(800, 450);  // Increased form height
+            this.Size = new System.Drawing.Size(800, 450);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Create labels
+            // Create main panel with scrolling
+            mainPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                Padding = new Padding(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING)
+            };
+
+            // Calculate positions using constants
+            int currentY = VERTICAL_PADDING;
+
+            // Create labels and input fields
             pathLabel = new Label
             {
                 Text = "Registry Path:",
-                Location = new System.Drawing.Point(50, 30),
-                Size = new System.Drawing.Size(100, 80),
-                Anchor = AnchorStyles.None
+                Location = new System.Drawing.Point(0, currentY),
+                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Anchor = AnchorStyles.Left
             };
+
+            registryPathBox = new TextBox
+            {
+                Location = new System.Drawing.Point(110, currentY),
+                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                Multiline = true
+            };
+
+            currentY += CONTROL_HEIGHT + VERTICAL_SPACING;
 
             nameLabel = new Label
             {
                 Text = "Key Name:",
-                Location = new System.Drawing.Point(50, 130),
-                Size = new System.Drawing.Size(100, 80),
-                Anchor = AnchorStyles.None
-            };
-
-            valueLabel = new Label
-            {
-                Text = "Key Value:",
-                Location = new System.Drawing.Point(50, 230),
-                Size = new System.Drawing.Size(100, 80),
-                Anchor = AnchorStyles.None
-            };
-
-            typeLabel = new Label
-            {
-                Text = "Key Type:",
-                Location = new System.Drawing.Point(50, 330),
-                Size = new System.Drawing.Size(100, 80),
-                Anchor = AnchorStyles.None
-            };
-
-            // Create input fields
-            registryPathBox = new TextBox
-            {
-                Location = new System.Drawing.Point(160, 30),
-                Size = new System.Drawing.Size(580, 80),
-                Anchor = AnchorStyles.None,
-                Multiline = true
+                Location = new System.Drawing.Point(0, currentY),
+                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Anchor = AnchorStyles.Left
             };
 
             keyNameBox = new TextBox
             {
-                Location = new System.Drawing.Point(160, 130),
-                Size = new System.Drawing.Size(580, 80),
-                Anchor = AnchorStyles.None,
+                Location = new System.Drawing.Point(110, currentY),
+                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Multiline = true
+            };
+
+            currentY += CONTROL_HEIGHT + VERTICAL_SPACING;
+
+            valueLabel = new Label
+            {
+                Text = "Key Value:",
+                Location = new System.Drawing.Point(0, currentY),
+                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Anchor = AnchorStyles.Left
             };
 
             keyValueBox = new TextBox
             {
-                Location = new System.Drawing.Point(160, 230),
-                Size = new System.Drawing.Size(580, 80),
-                Anchor = AnchorStyles.None,
+                Location = new System.Drawing.Point(110, currentY),
+                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Multiline = true
+            };
+
+            currentY += CONTROL_HEIGHT + VERTICAL_SPACING;
+
+            typeLabel = new Label
+            {
+                Text = "Key Type:",
+                Location = new System.Drawing.Point(0, currentY),
+                Size = new System.Drawing.Size(100, CONTROL_HEIGHT),
+                Anchor = AnchorStyles.Left
             };
 
             keyTypeCombo = new ComboBox
             {
-                Location = new System.Drawing.Point(160, 330),
-                Size = new System.Drawing.Size(580, 80),
+                Location = new System.Drawing.Point(110, currentY),
+                Size = new System.Drawing.Size(mainPanel.ClientSize.Width - 130, CONTROL_HEIGHT),
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Anchor = AnchorStyles.None
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
             };
             keyTypeCombo.Items.AddRange(new string[] { "String", "DWord", "QWord", "Binary", "MultiString", "ExpandString" });
             keyTypeCombo.SelectedIndex = 0;
+
+            currentY += CONTROL_HEIGHT + VERTICAL_SPACING;
 
             // Create and configure the run script button
             runScriptButton = new Button
             {
                 Text = "Run Script",
                 Size = new System.Drawing.Size(150, 40),
-                Location = new System.Drawing.Point(325, 380),
+                Location = new System.Drawing.Point((mainPanel.ClientSize.Width - 150) / 2, currentY),
                 Anchor = AnchorStyles.None
             };
             runScriptButton.Click += RunScriptButton_Click;
 
-            // Add all controls to the form
-            Controls.AddRange(new Control[] {
+            // Add all controls to the panel
+            mainPanel.Controls.AddRange(new Control[] {
                 pathLabel, nameLabel, valueLabel, typeLabel,
                 registryPathBox, keyNameBox, keyValueBox, keyTypeCombo,
                 runScriptButton
             });
+
+            // Add the panel to the form
+            Controls.Add(mainPanel);
 
             Text = "Windows 11 Easy Config";
         }
