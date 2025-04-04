@@ -3,6 +3,11 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 
+// TODO: Add button array with pre-defined registry paths and keys
+// beneath the manual registry modification section.
+// TODO: Add a "Restore Default" button
+// TODO: Regex path validation
+
 namespace EasyConfig
 {
     public class MainForm : Form
@@ -114,8 +119,7 @@ namespace EasyConfig
                     Arguments = arguments,
                     UseShellExecute = true,
                     RedirectStandardOutput = false,
-                    RedirectStandardError = false,
-                    CreateNoWindow = true
+                    RedirectStandardError = false
                 };
                 // Run the powershell registry modification script
                 Process.Start(psi);

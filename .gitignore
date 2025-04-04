@@ -25,4 +25,4 @@ msbuild.err
 msbuild.wrn
 
 # Visual Studio cache/options directory
-.vs/ 
+.vs/

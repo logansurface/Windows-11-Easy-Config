@@ -52,9 +52,6 @@ function Convert-RegistryPath {
         $Path = "HKLM:" + $Path
     }
     
-    # Ensure proper path format
-    $Path = $Path.Replace("\", "\")
-    
     return $Path
 }
 
@@ -84,11 +81,9 @@ try {
     Set-ItemProperty -Path $psRegistryPath -Name $KeyName -Value $convertedValue -Type $KeyType
 
     Write-Host "`nRegistry modification completed successfully!"
-} catch {
+    exit 0
+}
+catch {
     Write-Host "Error: $_"
     exit 1
 }
-
-# Wait for user input before closing
-Write-Host "`nPress any key to exit..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
