@@ -8,7 +8,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Update="MyScript.ps1">
+    <None Update="Set-RegistryKey.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

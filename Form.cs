@@ -93,7 +93,7 @@ namespace EasyConfig
             try
             {
                 // Get the script path relative to the application directory
-                string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MyScript.ps1");
+                string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Set-RegistryKey.ps1");
 
                 // Escape special characters in the parameters (e.g. " -> `")
                 string escapedPath = registryPathBox.Text.Replace("\"", "`\"");
@@ -101,7 +101,7 @@ namespace EasyConfig
                 string escapedValue = keyValueBox.Text.Replace("\"", "`\"");
 
                 // Build the PowerShell arguments with parameters
-                string arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{scriptPath}\" " +
+                string arguments = $"-ExecutionPolicy Bypass -File \"{scriptPath}\" " +
                                  $"-RegistryPath \"{escapedPath}\" " +
                                  $"-KeyName \"{escapedName}\" " +
                                  $"-KeyValue \"{escapedValue}\" " +
@@ -115,7 +115,7 @@ namespace EasyConfig
                     UseShellExecute = true,
                     RedirectStandardOutput = false,
                     RedirectStandardError = false,
-                    CreateNoWindow = false
+                    CreateNoWindow = true
                 };
                 // Run the powershell registry modification script
                 Process.Start(psi);
