@@ -5,15 +5,16 @@ using System.IO;
 
 // TODO: Add button array with pre-defined registry paths and keys
 // beneath the manual registry modification section.
+// Surround manual registry modification section with a groupbox
 // TODO: Add a "Restore Default" button
 // TODO: Regex path validation
+// TODO: Add a manifest file to the project to allow running the application as administrator
 
 namespace EasyConfig
 {
     public class MainForm : Form
     {
         private TableLayoutPanel tableLayoutPanel;
-        private Button runScriptButton;
         private TextBox registryPathBox;
         private TextBox keyNameBox;
         private TextBox keyValueBox;
@@ -22,7 +23,12 @@ namespace EasyConfig
         private Label nameLabel;
         private Label valueLabel;
         private Label typeLabel;
-        private const int CONTROL_ROWS = 4; // Number of input rows
+        private Button submitChangeButton;
+        private Button restoreDefaultButton;
+        private Button taskbarLeftButton;
+        private Button widgetToggleButton;
+        private Button disableSearchButton;
+        private const int CONTROL_ROWS = 6; // Number of input rows
         private const int CONTROL_HEIGHT = 250;
         private const int VERTICAL_SPACING = 0;
         private const int HORIZONTAL_PADDING = 10;
@@ -32,21 +38,27 @@ namespace EasyConfig
         private const int BUTTON_HEIGHT = 250;
         private const int LABEL_WIDTH = FORM_WIDTH / 3;
         private const int CONTROL_SPACING = 0;
+        private const string[] predefinedPaths = {
+            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        };
 
         public MainForm()
         {
             // Set fixed window size and disable resizing
-            this.Size = new System.Drawing.Size(FORM_WIDTH, FORM_HEIGHT);
+            this.Size = new Size(FORM_WIDTH, FORM_HEIGHT);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Text = "Windows 11 Easy Config";
+            this.Text = "Easy Config (Windows 11)";
 
             // Create TableLayoutPanel
             tableLayoutPanel = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
-                RowCount = CONTROL_ROWS,
+                RowCount = CONTROL_ROWS + 1, // Add one row for the submit changes button
                 Padding = new Padding(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING)
             };
 
@@ -84,49 +96,43 @@ namespace EasyConfig
             tableLayoutPanel.Controls.Add(keyTypeCombo, 1, 3);
 
             // Create and configure the run script button
-            runScriptButton = new Button { Text = "Run Script" , Anchor = AnchorStyles.Right, AutoSize = true};
-            tableLayoutPanel.Controls.Add(runScriptButton, 1, 4);
-            runScriptButton.Click += RunScriptButton_Click;
+            submitChangeButton = new Button { Text = "Submit Change" , Anchor = AnchorStyles.Right, AutoSize = true};
+            tableLayoutPanel.Controls.Add(submitChangeButton, 1, 4);
+            submitChangeButton.Click += SubmitChangeButton_Click;
+
+            // Predefined button array with registry paths and keys
+            
 
             // Add the panel to the form
             this.Controls.Add(tableLayoutPanel);
         }
 
-        // This function is called when the user clicks the "Run Script" button
-        private void RunScriptButton_Click(object sender, EventArgs e)
+        // This function is called when the user clicks the "Submit Change" button
+        private void SubmitChangeButton_Click(object sender, EventArgs e)
         {
-            try
+            // Get values from UI controls
+            string regPath = registryPathBox.Text;
+            string valueName = keyNameBox.Text;
+            string keyValue = keyValueBox.Text;
+            string keyType = keyTypeCombo.SelectedItem?.ToString();
+
+            // Basic validation (add more specific validation as needed)
+            if (string.IsNullOrWhiteSpace(regPath) || string.IsNullOrWhiteSpace(keyType))
             {
-                // Get the script path relative to the application directory
-                string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Set-RegistryKey.ps1");
-
-                // Escape special characters in the parameters (e.g. " -> `")
-                string escapedPath = registryPathBox.Text.Replace("\"", "`\"");
-                string escapedName = keyNameBox.Text.Replace("\"", "`\"");
-                string escapedValue = keyValueBox.Text.Replace("\"", "`\"");
-
-                // Build the PowerShell arguments with parameters
-                string arguments = $"-ExecutionPolicy Bypass -File \"{scriptPath}\" " +
-                                 $"-RegistryPath \"{escapedPath}\" " +
-                                 $"-KeyName \"{escapedName}\" " +
-                                 $"-KeyValue \"{escapedValue}\" " +
-                                 $"-KeyType \"{keyTypeCombo.SelectedItem}\"";
-
-                // Create a new ProcessStartInfo object (ProcessStartInfo is a class that contains information about a process)
-                ProcessStartInfo psi = new ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Arguments = arguments,
-                    UseShellExecute = true,
-                    RedirectStandardOutput = false,
-                    RedirectStandardError = false
-                };
-                // Run the powershell registry modification script
-                Process.Start(psi);
+                MessageBox.Show("Registry Path and Key Type cannot be empty.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            // Call the C# registry function
+            bool success = RegistryUtils.SetRegistryKey(regPath, valueName, keyValue, keyType);
+
+            // Provide feedback to the user
+            if (success) {
+                MessageBox.Show("Registry value set successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            } else {
+                // The error details are printed to the Debug Output window (View -> Output)
+                MessageBox.Show("Failed to set registry value.\nCheck application logs or Debug Output for details.\nEnsure you have the necessary permissions (run as Administrator if needed).",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
