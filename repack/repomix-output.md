@@ -96,6 +96,40 @@ msbuild.wrn
 .vs/
 ```
 
+## File: EasyConfig.cs
+```csharp
+using System;
+using System.Windows.Forms;
+
+namespace EasyConfig
+{
+    static class Program
+    {
+        [STAThread]
+        static void Main()
+        {
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
+        }
+    }
+}
+```
+
+## File: README.md
+```markdown
+# Easy Config (Windows 11)
+### Registry Paths (Planned Addition and Tested Working)
+path: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl \
+value: 0 \
+action: Align the taskbar left \\
+
+path: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDa \
+value: 0 \
+action: Disable widgets on the taskbar \
+```
+
 ## File: Set-RegistryKey.ps1
 ```powershell
 param(
@@ -152,9 +186,6 @@ function Convert-RegistryPath {
         $Path = "HKLM:" + $Path
     }
     
-    # Ensure proper path format
-    $Path = $Path.Replace("\", "\")
-    
     return $Path
 }
 
@@ -184,48 +215,12 @@ try {
     Set-ItemProperty -Path $psRegistryPath -Name $KeyName -Value $convertedValue -Type $KeyType
 
     Write-Host "`nRegistry modification completed successfully!"
-} catch {
+    exit 0
+}
+catch {
     Write-Host "Error: $_"
     exit 1
 }
-
-# Wait for user input before closing
-Write-Host "`nPress any key to exit..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-```
-
-## File: EasyConfig.cs
-```csharp
-using System;
-using System.Windows.Forms;
-
-namespace EasyConfig
-{
-    static class Program
-    {
-        [STAThread]
-        static void Main()
-        {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
-        }
-    }
-}
-```
-
-## File: README.md
-```markdown
-# Easy Config (Windows 11)
-### Registry Paths (Planned Addition and Tested Working)
-path: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl \
-value: 0 \
-action: Align the taskbar left \\
-
-path: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDa \
-value: 0 \
-action: Disable widgets on the taskbar \
 ```
 
 ## File: Form.cs
@@ -351,8 +346,7 @@ namespace EasyConfig
                     Arguments = arguments,
                     UseShellExecute = true,
                     RedirectStandardOutput = false,
-                    RedirectStandardError = false,
-                    CreateNoWindow = true
+                    RedirectStandardError = false
                 };
                 // Run the powershell registry modification script
                 Process.Start(psi);
